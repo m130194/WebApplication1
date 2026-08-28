@@ -102,7 +102,7 @@ namespace WebApplication1.Controllers
 
         // Part 8: Add a POST Route
         [HttpPost("/api/blog")]
-        public IActionResult Create([FromBody] BlogPost newPost)
+        public IActionResult CreateAPI([FromBody] BlogPost newPost)
         {
             _logger.LogInformation(
             "POST request received to create a blog post titled {PostTitle}.",
