@@ -1,9 +1,8 @@
-﻿using BlogApp.Configuration;
-using BlogApp.Models;
+﻿using WebApplication1.Configuration;
+using WebApplication1.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using WebApplication1.Configuration;
-using WebApplication1.Models;
+
 
 namespace WebApplication1.Services
 {
