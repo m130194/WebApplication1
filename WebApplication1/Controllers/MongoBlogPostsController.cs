@@ -236,13 +236,23 @@ namespace WebApplication1.Controllers
         //Retrieve posts by author
         [HttpGet("author/{authorId}")]
         public async Task<ActionResult<List<BlogPostDocument>>>
- GetByAuthor(
- string authorId,
- CancellationToken cancellationToken)
+         GetByAuthor(
+         string authorId,
+         CancellationToken cancellationToken)
         {
             List<BlogPostDocument> posts =
             await _service.GetByAuthorAsync(
             authorId,
+            cancellationToken);
+            return Ok(posts);
+        }
+
+        [HttpGet("popular")]
+        public async Task<ActionResult<List<BlogPostDocument>>> GetPopularPosts([FromQuery] int viewCount, CancellationToken cancellationToken)
+        {
+            List<BlogPostDocument> posts =
+            await _service.GetPopularPostsAsync(
+            viewCount,
             cancellationToken);
             return Ok(posts);
         }

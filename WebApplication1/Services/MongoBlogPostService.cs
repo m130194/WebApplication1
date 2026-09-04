@@ -260,6 +260,26 @@ namespace WebApplication1.Services
             .ToListAsync(cancellationToken);
         }
 
+        //Week 7 Part 15 Create a Range Filter that returns popular published posts
+        public async Task<List<BlogPostDocument>>
+        GetPopularPostsAsync(int minimumViews, CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, true),
+            Builders<BlogPostDocument>.Filter
+            .Gte( //this .Gte operator means greater than or equal to
+            post => post.ViewCount,
+           minimumViews)
+            );
+            return await _posts
+            .Find(filter)
+            .SortByDescending(post => post.ViewCount)
+            .ToListAsync(cancellationToken);
+        }
+
+
     }
 
 }
