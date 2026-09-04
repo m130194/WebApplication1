@@ -227,7 +227,7 @@ namespace WebApplication1.Services
 
         //Week 7 Part 10 Read Multiple Documents Using a Filter
         public async Task<List<BlogPostDocument>>
-        GetPublishedByCategoryAsync(string category, CancellationToken cancellationToken = default)
+        GetPublishedByCategoryAsync(string category, int limit, CancellationToken cancellationToken = default)
         {
             FilterDefinition<BlogPostDocument> filter =
             Builders<BlogPostDocument>.Filter.And(
@@ -238,6 +238,8 @@ namespace WebApplication1.Services
             );
             return await _posts
             .Find(filter)
+            .SortByDescending(post => post.PublishedAtUtc) //sort results by newer posts first
+            .Limit(limit) //limit results. this is where we added int limit to parameters 
             .ToListAsync(cancellationToken);
         }
 

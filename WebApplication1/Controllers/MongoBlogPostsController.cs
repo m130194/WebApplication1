@@ -214,14 +214,25 @@ namespace WebApplication1.Controllers
         //Get by category endpoint
         [HttpGet("category/{category}")]
         public async Task<ActionResult<List<BlogPostDocument>>>
-        GetByCategory(string category, CancellationToken cancellationToken)
+        GetByCategory(string category, [FromQuery] int limit = 10, CancellationToken cancellationToken = default)
+        //Get all posts by category
+        //{
+        //    List<BlogPostDocument> posts =
+        //    await _service.GetPublishedByCategoryAsync(category, cancellationToken);
+        //    return Ok(posts);
+        //}
+
+        //Limit Results
         {
+            limit = Math.Clamp(limit, 1, 100);
             List<BlogPostDocument> posts =
             await _service.GetPublishedByCategoryAsync(
             category,
+            limit,
             cancellationToken);
             return Ok(posts);
         }
+
 
 
     }
