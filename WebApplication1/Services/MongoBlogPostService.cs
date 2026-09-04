@@ -141,6 +141,20 @@ namespace WebApplication1.Services
  cancellationToken);
             return result.DeletedCount > 0;
         }
+
+        public async Task<long> DeleteDraftsAsync(
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, false);
+            DeleteResult result =
+            await _posts.DeleteManyAsync(
+            filter,
+            cancellationToken);
+            return result.DeletedCount;
+        }
+
     }
 
 }

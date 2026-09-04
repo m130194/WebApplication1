@@ -183,6 +183,18 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+        [HttpDelete("drafts")]
+        public async Task<IActionResult> DeleteDrafts(
+ CancellationToken cancellationToken)
+        {
+            long deleted =
+            await _service.DeleteDraftsAsync(
+            cancellationToken);
+            return Ok(new
+            {
+                deleted
+            });
+        }
 
     }
 }
