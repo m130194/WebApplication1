@@ -137,9 +137,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPut("{id:length(24)}/view")]
-        public async Task<IActionResult> AddView(
- string id,
- CancellationToken cancellationToken)
+        public async Task<IActionResult> AddView(string id, CancellationToken cancellationToken)
         {
             bool updated =
             await _service.IncrementViewCountAsync(
@@ -150,6 +148,23 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
             return NoContent();
+        }
+
+        [HttpPut("publish-by-tag/{tag}")]
+        public async Task<IActionResult> PublishByTag(
+ string tag,
+ CancellationToken cancellationToken)
+
+        {
+            long modified =
+            await _service.PublishByTagAsync(
+            tag,
+            cancellationToken);
+            return Ok(new
+            {
+                tag,
+                modified
+            });
         }
 
 
