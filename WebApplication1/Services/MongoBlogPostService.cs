@@ -87,6 +87,26 @@ namespace WebApplication1.Services
             cancellationToken: cancellationToken);
             return result.MatchedCount > 0;
         }
+
+        public async Task<long> PublishByTagAsync(
+ string tag,
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .AnyEq(post => post.Tags, tag);
+            UpdateDefinition<BlogPostDocument> update =
+            Builders<BlogPostDocument>.Update
+            .Set(post => post.IsPublished, true)
+            .Set(post => post.PublishedAtUtc, DateTime.UtcNow);
+            UpdateResult result =
+            await _posts.UpdateManyAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+            return result.ModifiedCount;
+        }
+
     }
 
 }
