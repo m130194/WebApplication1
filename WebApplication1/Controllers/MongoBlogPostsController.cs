@@ -247,12 +247,31 @@ namespace WebApplication1.Controllers
             return Ok(posts);
         }
 
+        //Week 7 Part 15 GetPopularPosts with query
         [HttpGet("popular")]
         public async Task<ActionResult<List<BlogPostDocument>>> GetPopularPosts([FromQuery] int viewCount, CancellationToken cancellationToken)
         {
             List<BlogPostDocument> posts =
             await _service.GetPopularPostsAsync(
             viewCount,
+            cancellationToken);
+            return Ok(posts);
+        }
+
+        //Week 7 Part 17 projection query selects fields required by the application
+        [HttpGet("category/{category}/summary")]
+        public async Task<
+         ActionResult<List<BlogPostSummaryViewModel>>>
+         GetCategorySummary(
+         string category,
+         [FromQuery] int limit = 10,
+         CancellationToken cancellationToken = default)
+        {
+            limit = Math.Clamp(limit, 1, 100);
+            List<BlogPostSummaryViewModel> posts =
+            await _service.GetCategorySummariesAsync(
+            category,
+            limit,
             cancellationToken);
             return Ok(posts);
         }

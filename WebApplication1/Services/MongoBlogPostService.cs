@@ -2,6 +2,7 @@
 using MongoDB.Driver;
 using WebApplication1.Configuration;
 using WebApplication1.Models;
+using WebApplication1.ViewModels;
 
 
 namespace WebApplication1.Services
@@ -278,6 +279,40 @@ namespace WebApplication1.Services
             .SortByDescending(post => post.ViewCount)
             .ToListAsync(cancellationToken);
         }
+
+        //Week 7 Part 16 Add projection with query that selects fields required by the application
+        public async Task<List<BlogPostSummaryViewModel>>
+         GetCategorySummariesAsync(
+         string category,
+         int limit,
+         CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Category, category),
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, true)
+            );
+            return await _posts
+            .Find(filter)
+            .SortByDescending(post => post.PublishedAtUtc)
+            .Limit(limit)
+            .Project(post =>
+            new BlogPostSummaryViewModel
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Category = post.Category,
+                AuthorName = post.Author.Name,
+                ViewCount = post.ViewCount,
+                PublishedAtUtc = post.PublishedAtUtc
+            })
+            .ToListAsync(cancellationToken);
+        }
+
+
+
 
 
     }
