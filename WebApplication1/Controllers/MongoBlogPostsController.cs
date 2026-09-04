@@ -136,5 +136,22 @@ namespace WebApplication1.Controllers
             });
         }
 
+        [HttpPut("{id:length(24)}/view")]
+        public async Task<IActionResult> AddView(
+ string id,
+ CancellationToken cancellationToken)
+        {
+            bool updated =
+            await _service.IncrementViewCountAsync(
+            id,
+            cancellationToken);
+            if (!updated)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
+
     }
 }
