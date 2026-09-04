@@ -14,8 +14,8 @@ namespace WebApplication1.Models
         //This allows the application to represent the MongoDB ObjectId as a C# string.
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        
-        
+
+
         [BsonElement("title")]
         public string Title { get; set; } = string.Empty;
         [BsonElement("content")]
@@ -38,6 +38,8 @@ namespace WebApplication1.Models
         [BsonElement("publishedAtUtc")]
         public DateTime? PublishedAtUtc { get; set; }
 
+        [BsonElement("category")]
+        public string Category { get; set; } = string.Empty;
     }
 
 }
