@@ -88,9 +88,7 @@ namespace WebApplication1.Services
             return result.MatchedCount > 0;
         }
 
-        public async Task<long> PublishByTagAsync(
- string tag,
- CancellationToken cancellationToken = default)
+        public async Task<long> PublishByTagAsync(string tag, CancellationToken cancellationToken = default)
         {
             FilterDefinition<BlogPostDocument> filter =
             Builders<BlogPostDocument>.Filter
@@ -99,6 +97,25 @@ namespace WebApplication1.Services
             Builders<BlogPostDocument>.Update
             .Set(post => post.IsPublished, true)
             .Set(post => post.PublishedAtUtc, DateTime.UtcNow);
+            UpdateResult result =
+            await _posts.UpdateManyAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+            return result.ModifiedCount;
+        }
+
+        public async Task<long> ChangeAuthorEmailAsync(
+ string oldEmail,
+ string newEmail,
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Author.Email, oldEmail);
+            UpdateDefinition<BlogPostDocument> update =
+            Builders<BlogPostDocument>.Update
+            .Set(post => post.Author.Email, newEmail);
             UpdateResult result =
             await _posts.UpdateManyAsync(
             filter,
