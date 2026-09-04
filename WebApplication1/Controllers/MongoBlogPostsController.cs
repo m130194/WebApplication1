@@ -45,14 +45,26 @@ namespace WebApplication1.Controllers
         
         [HttpPost]
         public async Task<ActionResult<BlogPostDocument>> Create(
-        [FromBody] BlogPostCreateViewModel viewModel,
+        [FromBody] MongoBlogPostCreateViewModel viewModel,
         CancellationToken cancellationToken)
         {
             BlogPostDocument document = new()
             {
                 Title = viewModel.Title.Trim(),
                 Content = viewModel.Content.Trim(),
-                CreatedAtUtc = DateTime.UtcNow
+                Author = new AuthorDocument
+                {
+                    Name = viewModel.AuthorName.Trim(),
+                    Email = viewModel.AuthorEmail.Trim()
+                },
+                Tags = viewModel.Tags,
+                ViewCount = 0,
+                IsPublished = viewModel.IsPublished,
+                CreatedAtUtc = DateTime.UtcNow,
+                PublishedAtUtc =
+            viewModel.IsPublished
+            ? DateTime.UtcNow
+            : null
             };
             await _service.InsertAsync(
             document,
@@ -62,6 +74,7 @@ namespace WebApplication1.Controllers
             new { id = document.Id },
             document);
         }
+
 
     }
 }
