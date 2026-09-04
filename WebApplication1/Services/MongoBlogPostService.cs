@@ -60,5 +60,13 @@ namespace WebApplication1.Services
             cancellationToken: cancellationToken);
             return document;
         }
+
+        public async Task InsertManyAsync(IEnumerable<BlogPostDocument> documents, CancellationToken cancellationToken = default)
+        {
+            await _posts.InsertManyAsync(
+            documents,
+            cancellationToken: cancellationToken);
+        }
+
     }
 }
