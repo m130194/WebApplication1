@@ -167,6 +167,22 @@ namespace WebApplication1.Controllers
             });
         }
 
+        [HttpDelete("{id:length(24)}")]
+        public async Task<IActionResult> Delete(
+ string id,
+ CancellationToken cancellationToken)
+        {
+            bool deleted =
+            await _service.DeleteByIdAsync(
+            id,
+            cancellationToken);
+            if (!deleted)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
 
     }
 }

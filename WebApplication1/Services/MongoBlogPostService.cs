@@ -124,6 +124,23 @@ namespace WebApplication1.Services
             return result.ModifiedCount;
         }
 
+        public async Task<bool> DeleteByIdAsync(
+ string id,
+ CancellationToken cancellationToken = default)
+        {
+            if (!ObjectId.TryParse(id, out _))
+            {
+                return false;
+            }
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Id, id);
+            DeleteResult result =
+            await _posts.DeleteOneAsync(
+                filter,
+ cancellationToken);
+            return result.DeletedCount > 0;
+        }
     }
 
 }
