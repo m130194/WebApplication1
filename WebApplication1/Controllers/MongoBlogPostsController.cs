@@ -53,6 +53,7 @@ namespace WebApplication1.Controllers
                 Content = viewModel.Content.Trim(),
                 Author = new AuthorDocument
                 {
+                    AuthorId = viewModel.AuthorId.Trim(),
                     Name = viewModel.AuthorName.Trim(),
                     Email = viewModel.AuthorEmail.Trim()
                 },
