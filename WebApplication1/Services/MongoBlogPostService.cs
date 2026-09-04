@@ -246,9 +246,9 @@ namespace WebApplication1.Services
 
         //Week 7 Part 14 Retrieve Posts by Author
         public async Task<List<BlogPostDocument>>
- GetByAuthorAsync(
- string authorId,
- CancellationToken cancellationToken = default)
+         GetByAuthorAsync(
+         string authorId,
+         CancellationToken cancellationToken = default)
         {
             FilterDefinition<BlogPostDocument> filter =
             Builders<BlogPostDocument>.Filter
@@ -311,7 +311,62 @@ namespace WebApplication1.Services
             .ToListAsync(cancellationToken);
         }
 
+        //Week 7 Part 19 Update one document 
+        public async Task<bool> UpdateAsync(
+         string id,
+         BlogPostUpdateViewModel viewModel,
+         CancellationToken cancellationToken = default)
+        {
+            if (!ObjectId.TryParse(id, out _))
+            {
+                return false;
+            }
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Id, id);
+            UpdateDefinition<BlogPostDocument> update =
+            Builders<BlogPostDocument>.Update
+            .Set(post => post.Title, viewModel.Title.Trim())
+            .Set(post => post.Content, viewModel.Content.Trim())
+            .Set(post => post.Category, viewModel.Category.Trim())
+            .Set(post => post.Tags, viewModel.Tags)
+            .Set(post => post.IsPublished, viewModel.IsPublished)
+            .Set(
+            post => post.PublishedAtUtc,
+            viewModel.IsPublished
+            ? DateTime.UtcNow
+           : null);
+            UpdateResult result =
+            await _posts.UpdateOneAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+            return result.MatchedCount > 0;
+        }
 
+        //Week 7 Part 20 Update Multiple Documents
+        public async Task<long> PublishCategoryAsync(
+ string category,
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Category, category),
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, false)
+            );
+            UpdateDefinition<BlogPostDocument> update =
+            Builders<BlogPostDocument>.Update
+            .Set(post => post.IsPublished, true)
+            .Set(post => post.PublishedAtUtc, DateTime.UtcNow);
+            UpdateResult result =
+            await _posts.UpdateManyAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+            return result.ModifiedCount;
+        }
 
 
 

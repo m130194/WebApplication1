@@ -276,6 +276,24 @@ namespace WebApplication1.Controllers
             return Ok(posts);
         }
 
+        //Week 7 Part 19 Update one document
+        [HttpPut("{id:length(24)}")]
+        public async Task<IActionResult> Update(
+         string id,
+         BlogPostUpdateViewModel viewModel,
+         CancellationToken cancellationToken)
+        {
+            bool updated =
+            await _service.UpdateAsync(
+            id,
+            viewModel,
+            cancellationToken);
+            if (!updated)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
 
 
     }
