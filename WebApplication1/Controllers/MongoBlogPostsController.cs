@@ -197,5 +197,32 @@ namespace WebApplication1.Controllers
             });
         }
 
+        //Week 7 Part 9 to query test data
+        [HttpPost("seed-query-data")]
+        public async Task<IActionResult> SeedQueryData(
+ CancellationToken cancellationToken)
+        {
+            await _service.InsertQueryTestDataAsync(
+            300,
+            cancellationToken);
+            return Ok(new
+            {
+                inserted = 300
+            });
+        }
+
+        //Get by category endpoint
+        [HttpGet("category/{category}")]
+        public async Task<ActionResult<List<BlogPostDocument>>>
+        GetByCategory(string category, CancellationToken cancellationToken)
+        {
+            List<BlogPostDocument> posts =
+            await _service.GetPublishedByCategoryAsync(
+            category,
+            cancellationToken);
+            return Ok(posts);
+        }
+
+
     }
 }

@@ -155,6 +155,93 @@ namespace WebApplication1.Services
             return result.DeletedCount;
         }
 
+        //this is to create additional test data
+        public async Task InsertQueryTestDataAsync(
+ int count,
+ CancellationToken cancellationToken = default)
+        {
+            string[] categories =
+            [
+            "Programming",
+ "Databases",
+ "DevOps",
+ "Security"
+            ];
+            (string Id, string Name, string Email)[] authors =
+            [
+            ("AUTHOR-001", "Sam Chen", "sam@example.com"),
+ ("AUTHOR-002", "Taylor Singh", "taylor@example.com"),
+ ("AUTHOR-003", "Morgan Lee", "morgan@example.com"),
+ ("AUTHOR-004", "Jordan Smith", "jordan@example.com")
+            ];
+            Random random = new(7);
+            List<BlogPostDocument> documents = [];
+            for (int i = 1; i <= count; i++)
+            {
+                string category =
+                categories[i % categories.Length];
+                var author =
+                authors[i % authors.Length];
+                bool published =
+                i % 4 != 0;
+                DateTime created =
+                DateTime.UtcNow
+                .AddDays(-(i % 120))
+                .AddMinutes(-i);
+                BlogPostDocument post = new()
+                {
+                    Title = $"Session 7 Sample Post {i}",
+                    Content =
+                $"This is sample blog post number {i} used for MongoDB query testing.",
+                    Category = category,
+                    Author = new AuthorDocument
+                    {
+                        AuthorId = author.Id,
+                        Name = author.Name,
+                        Email = author.Email
+                    },
+                    Tags =
+                category == "Databases"
+                ? ["mongodb", "nosql"]
+               : category == "DevOps"
+                ? ["docker", "devops"]
+               : ["programming"],
+                    ViewCount =
+                random.Next(0, 1000),
+                    IsPublished =
+                published,
+                    CreatedAtUtc =
+                created,
+                    PublishedAtUtc =
+                published
+                ? created.AddHours(1)
+               : null
+                };
+                documents.Add(post);
+            }
+            await _posts.InsertManyAsync(
+            documents,
+            cancellationToken: cancellationToken);
+        }
+        //end test data
+
+        //Week 7 Part 10 Read Multiple Documents Using a Filter
+        public async Task<List<BlogPostDocument>>
+        GetPublishedByCategoryAsync(string category, CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Category, category),
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, true)
+            );
+            return await _posts
+            .Find(filter)
+            .ToListAsync(cancellationToken);
+        }
+
+
     }
 
 }
