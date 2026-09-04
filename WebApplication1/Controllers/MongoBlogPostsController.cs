@@ -1,8 +1,7 @@
-﻿using WebApplication1.Models;
+﻿using Microsoft.AspNetCore.Mvc;
+using WebApplication1.Models;
 using WebApplication1.Services;
 using WebApplication1.ViewModels;
-
-using Microsoft.AspNetCore.Mvc;
 
 namespace WebApplication1.Controllers
 {
@@ -17,7 +16,7 @@ namespace WebApplication1.Controllers
         {
             _service = service;
         }
-        
+
         [HttpGet]
         public async Task<ActionResult<List<BlogPostDocument>>> GetAll(
         CancellationToken cancellationToken)
@@ -26,7 +25,7 @@ namespace WebApplication1.Controllers
                 await _service.GetAllAsync(cancellationToken);
             return Ok(posts);
         }
-        
+
         [HttpGet("{id:length(24)}")]
         public async Task<ActionResult<BlogPostDocument>> GetById(
         string id,
@@ -42,7 +41,7 @@ namespace WebApplication1.Controllers
             }
             return Ok(post);
         }
-        
+
         [HttpPost]
         public async Task<ActionResult<BlogPostDocument>> Create(
         [FromBody] MongoBlogPostCreateViewModel viewModel,
@@ -75,6 +74,67 @@ namespace WebApplication1.Controllers
             document);
         }
 
+        [HttpPost("seed")]
+        public async Task<IActionResult> Seed(
+         CancellationToken cancellationToken)
+        {
+            List<BlogPostDocument> samplePosts =
+            [
+            new BlogPostDocument
+                     {
+                     Title = "MVC Controllers",
+                     Content = "Controllers receive requests and select application responses.",
+                     Author = new AuthorDocument
+                     {
+                     Name = "Sam Chen",
+                     Email = "sam@example.com"
+                     },
+                     Tags = ["mvc", "aspnet"],
+                     ViewCount = 20,
+                     IsPublished = true,
+                     CreatedAtUtc = DateTime.UtcNow,
+                     PublishedAtUtc = DateTime.UtcNow
+                     },
+                     new BlogPostDocument
+                     {
+                     Title = "MongoDB Documents",
+                     Content = "MongoDB stores data using flexible BSON documents.",
+                     Author = new AuthorDocument
+                     {
+                     Name = "Sam Chen",
+                     Email = "sam@example.com"
+                     },
+
+                     Tags = ["mongodb", "nosql"],
+                     ViewCount = 14,
+                     IsPublished = true,
+                     CreatedAtUtc = DateTime.UtcNow,
+                     PublishedAtUtc = DateTime.UtcNow
+                     },
+                     new BlogPostDocument
+                     {
+                     Title = "Future Article",
+                     Content = "This document represents an unpublished draft blog post.",
+                     Author = new AuthorDocument
+                     {
+                     Name = "Taylor Singh",
+                     Email = "taylor@example.com"
+                     },
+                     Tags = ["mongodb", "draft"],
+                     ViewCount = 0,
+                     IsPublished = false,
+                     CreatedAtUtc = DateTime.UtcNow,
+                     PublishedAtUtc = null
+                     }
+             ];
+            await _service.InsertManyAsync(
+            samplePosts,
+            cancellationToken);
+            return Ok(new
+            {
+                inserted = samplePosts.Count
+            });
+        }
 
     }
 }
