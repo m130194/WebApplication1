@@ -1,7 +1,7 @@
-﻿using WebApplication1.Configuration;
-using WebApplication1.Models;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
+using WebApplication1.Configuration;
+using WebApplication1.Models;
 
 
 namespace WebApplication1.Services
@@ -68,5 +68,25 @@ namespace WebApplication1.Services
             cancellationToken: cancellationToken);
         }
 
+        public async Task<bool> IncrementViewCountAsync(string id, CancellationToken cancellationToken = default)
+        {
+            if (!ObjectId.TryParse(id, out _))
+            {
+                return false;
+
+            }
+
+            FilterDefinition<BlogPostDocument> filter = Builders<BlogPostDocument>.Filter.Eq(post => post.Id, id);
+            UpdateDefinition<BlogPostDocument> update =
+            Builders<BlogPostDocument>.Update
+            .Inc(post => post.ViewCount, 1);
+            UpdateResult result =
+            await _posts.UpdateOneAsync(
+            filter,
+            update,
+            cancellationToken: cancellationToken);
+            return result.MatchedCount > 0;
+        }
     }
+
 }
