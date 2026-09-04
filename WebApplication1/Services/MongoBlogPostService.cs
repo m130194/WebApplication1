@@ -243,6 +243,22 @@ namespace WebApplication1.Services
             .ToListAsync(cancellationToken);
         }
 
+        //Week 7 Part 14 Retrieve Posts by Author
+        public async Task<List<BlogPostDocument>>
+ GetByAuthorAsync(
+ string authorId,
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter
+            .Eq(
+            post => post.Author.AuthorId,
+            authorId);
+            return await _posts
+            .Find(filter)
+            .SortByDescending(post => post.PublishedAtUtc)
+            .ToListAsync(cancellationToken);
+        }
 
     }
 

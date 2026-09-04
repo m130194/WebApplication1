@@ -233,6 +233,20 @@ namespace WebApplication1.Controllers
             return Ok(posts);
         }
 
+        //Retrieve posts by author
+        [HttpGet("author/{authorId}")]
+        public async Task<ActionResult<List<BlogPostDocument>>>
+ GetByAuthor(
+ string authorId,
+ CancellationToken cancellationToken)
+        {
+            List<BlogPostDocument> posts =
+            await _service.GetByAuthorAsync(
+            authorId,
+            cancellationToken);
+            return Ok(posts);
+        }
+
 
 
     }
