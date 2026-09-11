@@ -168,6 +168,7 @@ namespace WebApplication1.Controllers
             });
         }
 
+        //Delete by Post ID
         [HttpDelete("{id:length(24)}")]
         public async Task<IActionResult> Delete(
  string id,
@@ -184,6 +185,7 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+        //Delete all drafts?
         [HttpDelete("drafts")]
         public async Task<IActionResult> DeleteDrafts(
  CancellationToken cancellationToken)
@@ -227,6 +229,28 @@ namespace WebApplication1.Controllers
             limit = Math.Clamp(limit, 1, 100);
             List<BlogPostDocument> posts =
             await _service.GetPublishedByCategoryAsync(
+            category,
+            limit,
+            cancellationToken);
+            return Ok(posts);
+        }
+
+        //Gets unpublished drafts
+        [HttpGet("category/{category}/unpublished")]
+        public async Task<ActionResult<List<BlogPostDocument>>>
+        GetUnpublishedByCategory(string category, [FromQuery] int limit = 10, CancellationToken cancellationToken = default)
+        //Get all posts by category
+        //{
+        //    List<BlogPostDocument> posts =
+        //    await _service.GetPublishedByCategoryAsync(category, cancellationToken);
+        //    return Ok(posts);
+        //}
+
+        //Limit Results
+        {
+            limit = Math.Clamp(limit, 1, 100);
+            List<BlogPostDocument> posts =
+            await _service.GetUnpublishedByCategoryAsync(
             category,
             limit,
             cancellationToken);
@@ -295,6 +319,69 @@ namespace WebApplication1.Controllers
             return NoContent();
         }
 
+        //Week 7 Part 20 Update multiple documents publishes all drafts by category
+        [HttpPut("category/{category}/publish")]
+        public async Task<IActionResult> PublishManyByCategory(
+         string category,
+         //BlogPostUpdateViewModel viewModel - this argument means it requires a JSON format in body to be posted but PublishCategoryAsync method already specifies change in isPublished from false to true,
+         CancellationToken cancellationToken)
+        {
+            long updated =
+            await _service.PublishCategoryAsync(
+            category, cancellationToken);
+            if (updated == 0)
+            {
+                return NotFound();
+            }
+            return Ok(new
+            {
+                modified = updated
+            });
+        }
+
+        //Week 7 Part 22 Delete Multiple Documents
+        [HttpDelete("category/{category}/drafts")]
+        public async Task<IActionResult> DeleteDraftsByCategory(
+ string category,
+ CancellationToken cancellationToken)
+        {
+            long deleted =
+            await _service.DeleteDraftsByCategoryAsync(
+            category, cancellationToken);
+            return Ok(new
+            {
+                modified = deleted
+            });
+        }
+
+        //       [HttpDelete("{id:length(24)}")]
+        //       public async Task<IActionResult> Delete(
+        //string id,
+        //CancellationToken cancellationToken)
+        //       {
+        //           bool deleted =
+        //           await _service.DeleteByIdAsync(
+        //           id,
+        //           cancellationToken);
+        //           if (!deleted)
+        //           {
+        //               return NotFound();
+        //           }
+        //           return NoContent();
+        //       }
+
+        //       [HttpDelete("drafts")]
+        //       public async Task<IActionResult> DeleteDrafts(
+        //CancellationToken cancellationToken)
+        //       {
+        //           long deleted =
+        //           await _service.DeleteDraftsAsync(
+        //           cancellationToken);
+        //           return Ok(new
+        //           {
+        //               deleted
+        //           });
+        //       }
 
     }
 }

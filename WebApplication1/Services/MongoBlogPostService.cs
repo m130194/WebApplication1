@@ -143,6 +143,26 @@ namespace WebApplication1.Services
             return result.DeletedCount > 0;
         }
 
+        //Week 7 Part 22 Delete Multiple Documents
+        public async Task<long> DeleteDraftsByCategoryAsync(
+ string category,
+ CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Category, category),
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, false)
+            );
+            DeleteResult result =
+            await _posts.DeleteManyAsync(
+            filter,
+            cancellationToken);
+            return result.DeletedCount;
+        }
+
+
         public async Task<long> DeleteDraftsAsync(
  CancellationToken cancellationToken = default)
         {
@@ -236,6 +256,24 @@ namespace WebApplication1.Services
             .Eq(post => post.Category, category),
             Builders<BlogPostDocument>.Filter
             .Eq(post => post.IsPublished, true)
+            );
+            return await _posts
+            .Find(filter)
+            .SortByDescending(post => post.PublishedAtUtc) //sort results by newer posts first
+            .Limit(limit) //limit results. this is where we added int limit to parameters 
+            .ToListAsync(cancellationToken);
+        }
+
+        //Read Multiple Documents Using Filter Unpublished
+        public async Task<List<BlogPostDocument>>
+        GetUnpublishedByCategoryAsync(string category, int limit, CancellationToken cancellationToken = default)
+        {
+            FilterDefinition<BlogPostDocument> filter =
+            Builders<BlogPostDocument>.Filter.And(
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.Category, category),
+            Builders<BlogPostDocument>.Filter
+            .Eq(post => post.IsPublished, false)
             );
             return await _posts
             .Find(filter)
@@ -344,7 +382,7 @@ namespace WebApplication1.Services
             return result.MatchedCount > 0;
         }
 
-        //Week 7 Part 20 Update Multiple Documents
+        //Week 7 Part 20 Update multiple documents publishes all drafts by category
         public async Task<long> PublishCategoryAsync(
  string category,
  CancellationToken cancellationToken = default)
