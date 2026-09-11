@@ -2,11 +2,13 @@ services:
   mongodb:
     image: mongo:8.0
     container_name: blog-mongodb
+    command:
+     - mongod
+     - --replSet
+     - rs0
+     - --bind_ip_all
     ports:
       - "27017:27017"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - blog-mongo-data:/data/db
 volumes:
