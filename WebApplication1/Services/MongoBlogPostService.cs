@@ -406,6 +406,49 @@ namespace WebApplication1.Services
             return result.ModifiedCount;
         }
 
+        //Week 7 Part 26 Access Patterns: Create the category compound index
+        public async Task CreateIndexesAsync(
+ CancellationToken cancellationToken = default)
+        {
+            IndexKeysDefinition<BlogPostDocument> categoryIndex =
+            Builders<BlogPostDocument>.IndexKeys
+            .Ascending(post => post.Category)
+            .Ascending(post => post.IsPublished)
+            .Descending(post => post.PublishedAtUtc);
+            CreateIndexModel<BlogPostDocument> categoryIndexModel =
+            new(
+            categoryIndex,
+            new CreateIndexOptions
+            {
+                Name =
+            "idx_category_published_date"
+            });
+            await _posts.Indexes.CreateOneAsync(
+            categoryIndexModel,
+            cancellationToken: cancellationToken);
+
+            //Retrieve posts belonging to one author, newest first
+            IndexKeysDefinition<BlogPostDocument> authorIndex =
+         Builders<BlogPostDocument>.IndexKeys
+         .Ascending(post => post.Author.AuthorId)
+         .Descending(post => post.PublishedAtUtc);
+            CreateIndexModel<BlogPostDocument> authorIndexModel =
+             new(
+             authorIndex,
+             new CreateIndexOptions
+             {
+                 Name =
+             "idx_author_date"
+             });
+            await _posts.Indexes.CreateManyAsync(
+             [
+             categoryIndexModel,
+             authorIndexModel
+             ],
+             cancellationToken);
+
+
+        }
 
 
     }

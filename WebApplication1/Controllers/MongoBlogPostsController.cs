@@ -354,34 +354,20 @@ namespace WebApplication1.Controllers
             });
         }
 
-        //       [HttpDelete("{id:length(24)}")]
-        //       public async Task<IActionResult> Delete(
-        //string id,
-        //CancellationToken cancellationToken)
-        //       {
-        //           bool deleted =
-        //           await _service.DeleteByIdAsync(
-        //           id,
-        //           cancellationToken);
-        //           if (!deleted)
-        //           {
-        //               return NotFound();
-        //           }
-        //           return NoContent();
-        //       }
+        //Week 7 Part 28 Create access point indexes
 
-        //       [HttpDelete("drafts")]
-        //       public async Task<IActionResult> DeleteDrafts(
-        //CancellationToken cancellationToken)
-        //       {
-        //           long deleted =
-        //           await _service.DeleteDraftsAsync(
-        //           cancellationToken);
-        //           return Ok(new
-        //           {
-        //               deleted
-        //           });
-        //       }
+        [HttpPost("indexes")]
+        public async Task<IActionResult> CreateIndexes(
+ CancellationToken cancellationToken)
+        {
+            await _service.CreateIndexesAsync(
+            cancellationToken);
+            return Ok(new
+            {
+                message = "Indexes created."
+            });
+        }
+
 
     }
 }
