@@ -47,5 +47,20 @@ namespace WebApplication1.Controllers
             });
         }
 
+        //Week 9 Part 32 Add a Policy-Protected Route
+
+        [Authorize(Policy = "CanManageBlog")]
+        [HttpGet("manage")]
+        public IActionResult Manage()
+        {
+            return Ok(new
+            {
+                username =
+            User.Identity?.Name,
+                message =
+            "You satisfy the CanManageBlog policy."
+            });
+        }
+
     }
 }
