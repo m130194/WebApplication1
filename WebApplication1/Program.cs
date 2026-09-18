@@ -36,6 +36,9 @@ builder.Services.AddSingleton<IMongoClient>(
 builder.Services.AddSingleton<MongoBlogPostService>();
 //Week 8 Part 22 Register the Activity Log Service
 builder.Services.AddSingleton<MongoActivityLogService>();
+//Week 8 Part 23 Register the Background Service that starts when the ASP.NET Core application starts
+builder.Services.AddHostedService<BlogPostChangeWatcher>();
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
