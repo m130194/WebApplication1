@@ -30,5 +30,35 @@ namespace WebApplication1.Services
             cancellationToken);
         }
 
+        // Week 8 Part 31: Create the TTL Index
+
+        public async Task CreateIndexesAsync(
+ CancellationToken cancellationToken = default)
+        {
+            IndexKeysDefinition<ActivityLogDocument>
+            ttlKeys =
+            Builders<ActivityLogDocument>
+            .IndexKeys
+            .Ascending(
+            log => log.ExpiresAtUtc);
+            CreateIndexModel<ActivityLogDocument>
+            ttlIndex =
+            new(
+            ttlKeys,
+            new CreateIndexOptions
+            {
+                Name =
+            "idx_activity_expiry_ttl",
+                ExpireAfter =
+            TimeSpan.Zero
+            });
+            await _activityLogs.Indexes
+            .CreateOneAsync(
+            ttlIndex,
+            cancellationToken:
+            cancellationToken);
+        }
+
+
     }
 }
