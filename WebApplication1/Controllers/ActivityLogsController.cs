@@ -1,6 +1,8 @@
 ﻿using WebApplication1.Services;
 using WebApplication1.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+//required for authorize
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication1.Controllers
 {
@@ -17,7 +19,9 @@ namespace WebApplication1.Controllers
             _service =
             service;
         }
-        
+
+        //Week 9 Part 37 Protect an Administrative Operation to create database indexes
+        [Authorize(Roles = "Admin")]
         [HttpPost("indexes")]
         public async Task<IActionResult> CreateIndexes(
         CancellationToken cancellationToken)
@@ -31,6 +35,8 @@ namespace WebApplication1.Controllers
             });
         }
 
+        //Week 9 Part 36 Protect a real application route
+        [Authorize]
         //Week 8 Part 38 Add the GET Endpoint
         [HttpGet]
         public async Task<
@@ -51,6 +57,8 @@ namespace WebApplication1.Controllers
             cancellationToken);
             return Ok(logs);
         }
+
+        
 
 
     }
