@@ -86,10 +86,10 @@ namespace WebApplication1.Services
 
         //Week 8 Part 37 Add a projected query so MongoDB only returns the fields required by the API response
         public async Task<
- List<ActivityLogSummaryViewModel>>
- GetRecentAsync(
- int limit,
- CancellationToken cancellationToken = default)
+         List<ActivityLogSummaryViewModel>>
+         GetRecentAsync(
+         int limit,
+         CancellationToken cancellationToken = default)
         {
             return await _activityLogs
             .Find(

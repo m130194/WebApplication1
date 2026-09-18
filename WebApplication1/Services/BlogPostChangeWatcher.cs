@@ -56,6 +56,8 @@ namespace WebApplication1.Services
                 }
             }
         }
+        
+        //pipeline to watch insert events only to be added here if necessary see Week 8 Part 46
         private async Task WatchChangesAsync(
         CancellationToken cancellationToken)
         {
