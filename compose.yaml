@@ -1,15 +1,57 @@
+# services:
+#   mongodb:
+#     image: mongo:8.0
+#     container_name: blog-mongodb
+#     command:
+#      - mongod
+#      - --replSet
+#      - rs0
+#      - --bind_ip_all
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - blog-mongo-data:/data/db
+# volumes:
+#   blog-mongo-data:
+
 services:
+  keyfile-init:
+    image: mongo:8.0
+    user:  root
+    entrypoint:
+    - /bin/bash
+    - -c
+    - |
+      set -e
+      printf '%s' "$$MONGO_REPLICA_KEY" > /keyfile/mongodb-keyfile
+      chown mongodb:mongodb /keyfile/mongodb-keyfile
+      chmod 400 /keyfile/mongodb-keyfile
+      echo "MongoDB replica-set keyfile created."
+    environment:
+     MONGO_REPLICA_KEY: ${MONGO_REPLICA_KEY}
+    volumes:
+     - mongo-keyfile:/keyfile
   mongodb:
     image: mongo:8.0
     container_name: blog-mongodb
+    depends_on:
+      keyfile-init:
+        condition: service_completed_successfully
     command:
-     - mongod
-     - --replSet
-     - rs0
-     - --bind_ip_all
+    - mongod
+    - --replSet
+    - rs0
+    - --bind_ip_all
+    - --keyFile
+    - /keyfile/mongodb-keyfile
     ports:
-      - "27017:27017"
+    - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${MONGO_ROOT_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD}
     volumes:
       - blog-mongo-data:/data/db
+      - mongo-keyfile:/keyfile:ro
 volumes:
   blog-mongo-data:
+  mongo-keyfile:
