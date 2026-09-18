@@ -84,6 +84,38 @@ namespace WebApplication1.Services
             cancellationToken);
         }
 
+        //Week 8 Part 37 Add a projected query so MongoDB only returns the fields required by the API response
+        public async Task<
+ List<ActivityLogSummaryViewModel>>
+ GetRecentAsync(
+ int limit,
+ CancellationToken cancellationToken = default)
+        {
+            return await _activityLogs
+            .Find(
+            Builders<ActivityLogDocument>
+            .Filter.Empty)
+            .SortByDescending(
+            log => log.CreatedAtUtc)
+            .Limit(limit)
+            .Project(
+            log =>
+            new ActivityLogSummaryViewModel
+            {
+                OperationType =
+                     log.OperationType,
+                BlogPostId =
+                     log.BlogPostId,
+                Title =
+                     log.Title,
+                Message =
+                     log.Message,
+                CreatedAtUtc =
+                     log.CreatedAtUtc
+            })
+                     .ToListAsync(
+                     cancellationToken);
+        }
 
     }
 }
