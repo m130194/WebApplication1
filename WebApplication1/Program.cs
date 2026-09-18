@@ -75,11 +75,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+//middleware section
+
 app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 
 app.UseRouting();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
