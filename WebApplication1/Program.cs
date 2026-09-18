@@ -34,6 +34,8 @@ builder.Services.AddSingleton(mongoDbSettings);
 builder.Services.AddSingleton<IMongoClient>(
  new MongoClient(mongoDbSettings.ConnectionString));
 builder.Services.AddSingleton<MongoBlogPostService>();
+//Week 8 Part 22 Register the Activity Log Service
+builder.Services.AddSingleton<MongoActivityLogService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
