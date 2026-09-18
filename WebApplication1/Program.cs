@@ -1,6 +1,8 @@
 using WebApplication1.Configuration;
 using WebApplication1.Services;
 using MongoDB.Driver;
+using WebApplication1.Security;
+using Microsoft.AspNetCore.Authentication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,26 @@ builder.Services.AddHostedService<BlogPostChangeWatcher>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+
+//Week 9 Part 17 Register Basic Authentication
+builder.Services
+ .AddAuthentication(options =>
+ {
+     options.DefaultAuthenticateScheme =
+     "Basic";
+     options.DefaultChallengeScheme =
+     "Basic";
+ })
+ .AddScheme<
+ AuthenticationSchemeOptions,
+ BasicAuthenticationHandler>(
+ "Basic",
+ options => { });
+
+//Week 9 Part 18 Add Authorization
+builder.Services.AddAuthorization();
+
 
 var app = builder.Build();
 
