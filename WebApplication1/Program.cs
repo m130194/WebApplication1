@@ -1,8 +1,9 @@
-using WebApplication1.Configuration;
-using WebApplication1.Services;
-using MongoDB.Driver;
-using WebApplication1.Security;
 using Microsoft.AspNetCore.Authentication;
+using MongoDB.Driver;
+using System.Net;
+using WebApplication1.Configuration;
+using WebApplication1.Security;
+using WebApplication1.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -62,7 +63,24 @@ builder.Services
  options => { });
 
 //Week 9 Part 18 Add Authorization
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
+
+//Week 9 Part 31 Create a Policy-Based Authorization Rule
+builder.Services.AddAuthorization(
+ options =>
+ {
+     options.AddPolicy(
+     "CanManageBlog",
+     policy =>
+     {
+         policy.RequireClaim(
+     "Permission",
+    "ManageBlog");
+     });
+ });
+
+
+
 
 
 var app = builder.Build();

@@ -33,5 +33,19 @@ namespace WebApplication1.Controllers
             });
         }
 
+        //Week 9 Part 27 Add Role-Based Authorization
+        [Authorize(Roles = "Admin")]
+        [HttpGet("admin")]
+        public IActionResult Admin()
+        {
+            return Ok(new
+            {
+                username =
+            User.Identity?.Name,
+                message =
+            "You have the Admin role."
+            });
+        }
+
     }
 }
