@@ -52,10 +52,35 @@ namespace WebApplication1.Services
                 ExpireAfter =
             TimeSpan.Zero
             });
+            //await _activityLogs.Indexes
+            //.CreateOneAsync(
+            //ttlIndex,
+            //cancellationToken:
+            //cancellationToken);
+
+
+            // create a separate query index so listing query sorts by ExpiresAtUtc for lifecycle management and query optimisation
+            IndexKeysDefinition<ActivityLogDocument>
+             createdAtKeys =
+             Builders<ActivityLogDocument>
+             .IndexKeys
+             .Descending(
+             log => log.CreatedAtUtc);
+            CreateIndexModel<ActivityLogDocument>
+            createdAtIndex =
+            new(
+            createdAtKeys,
+            new CreateIndexOptions
+            {
+                Name =
+            "idx_activity_created"
+            });
             await _activityLogs.Indexes
-            .CreateOneAsync(
+            .CreateManyAsync(
+            [
             ttlIndex,
-            cancellationToken:
+            createdAtIndex
+            ],
             cancellationToken);
         }
 
