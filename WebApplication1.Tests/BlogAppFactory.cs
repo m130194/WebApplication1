@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using static System.Net.WebRequestMethods;
 
 
@@ -19,15 +20,10 @@ namespace WebApplication1.Tests
     public sealed class BlogAppFactory
  : WebApplicationFactory<Program>
     {
-        protected override void ConfigureWebHost(
-        IWebHostBuilder builder)
+        protected IHost ConfigureHost(
+        IHostBuilder builder)
         {
-            builder.UseEnvironment(
-            "Testing");
-            builder.ConfigureAppConfiguration(
-            (context, configuration) =>
-            {
-                Dictionary<string, string?>
+            Dictionary<string, string?>
      settings =
     new()
     {
@@ -64,10 +60,17 @@ namespace WebApplication1.Tests
      ] =
      "TestEditorPassword"
     };
+
+            builder.ConfigureHostConfiguration(
+            (configuration) =>
+            {
+                
                 configuration
      .AddInMemoryCollection(
      settings);
             });
+
+            return base.CreateHost(builder);
         }
     }
 }
