@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.37411.7
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12217.157 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{72475FBB-A35E-46DF-9251-7841139DFC19}"
 EndProject
@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.env.example = .env.example
 		compose.yaml = compose.yaml
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApplication1.Tests", "WebApplication1.Tests\WebApplication1.Tests.csproj", "{EE190C6D-00CC-4BB5-B4A5-CBD1FB2D84EF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -22,6 +24,10 @@ Global
 		{72475FBB-A35E-46DF-9251-7841139DFC19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72475FBB-A35E-46DF-9251-7841139DFC19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72475FBB-A35E-46DF-9251-7841139DFC19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE190C6D-00CC-4BB5-B4A5-CBD1FB2D84EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE190C6D-00CC-4BB5-B4A5-CBD1FB2D84EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE190C6D-00CC-4BB5-B4A5-CBD1FB2D84EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE190C6D-00CC-4BB5-B4A5-CBD1FB2D84EF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
