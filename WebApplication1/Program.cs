@@ -150,3 +150,8 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
+
+//Week 10 Part 38: Make program available to test project
+public partial class Program
+{
+}
