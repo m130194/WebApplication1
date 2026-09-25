@@ -52,6 +52,55 @@ services:
     volumes:
       - blog-mongo-data:/data/db
       - mongo-keyfile:/keyfile:ro
+
+healthcheck:
+ test:
+ [
+ "CMD-SHELL",
+ "mongosh --quiet --host localhost --port 27017 -u
+$$MONGO_INITDB_ROOT_USERNAME -p $$MONGO_INITDB_ROOT_PASSWORD --
+authenticationDatabase admin --eval 'db.adminCommand({ ping: 1 }).ok' |
+grep 1"
+ ]
+ interval: 10s
+ timeout: 5s
+ retries: 10
+ api:
+ build:
+ context: ./BlogApp
+ dockerfile: Dockerfile
+ container_name: blog-api
+ depends_on:
+ mongodb:
+ condition: service_healthy
+ environment:
+ ASPNETCORE_ENVIRONMENT: Development
+ ASPNETCORE_URLS: http://+:8080
+ MongoDb__ConnectionString:
+"mongodb://${MONGO_ROOT_USERNAME}:${MONGO_ROOT_PASSWORD}@mongodb:27017/?aut
+hSource=admin&replicaSet=rs0&directConnection=true"
+ MongoDb__DatabaseName: BlogDb
+ MongoDb__CollectionName: BlogPosts
+ MongoDb__ActivityLogCollectionName: ActivityLogs
+ BasicAuth__AdminUsername: ${BASIC_AUTH_ADMIN_USERNAME}
+ BasicAuth__AdminPassword: ${BASIC_AUTH_ADMIN_PASSWORD}
+ BasicAuth__EditorUsername: ${BASIC_AUTH_EDITOR_USERNAME}
+ BasicAuth__EditorPassword: ${BASIC_AUTH_EDITOR_PASSWORD}
+ ports:
+ - "8080:8080"
+ healthcheck:
+ test:
+ [
+ "CMD",
+ "curl",
+ "-f",
+ "http://localhost:8080/health"
+ ]
+ interval: 10s
+ timeout: 5s
+ retries
+
+
 volumes:
   blog-mongo-data:
   mongo-keyfile:
