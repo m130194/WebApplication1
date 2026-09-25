@@ -4,6 +4,7 @@ using System.Net;
 using WebApplication1.Configuration;
 using WebApplication1.Security;
 using WebApplication1.Services;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,6 +105,34 @@ app.UseRouting();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+//request trace logging
+app.Use(
+     async (context, next) =>
+     {
+     string requestId =
+     context.TraceIdentifier;
+     long startTimestamp =
+     Stopwatch.GetTimestamp();
+     context.Response.Headers[
+     "X-Request-ID"] =
+     requestId;
+     app.Logger.LogInformation(
+     "Request {RequestId} started: {Method} {Path}",
+     requestId,
+     context.Request.Method,
+     context.Request.Path);
+     await next();
+     TimeSpan elapsed =
+     Stopwatch.GetElapsedTime(
+     startTimestamp);
+ app.Logger.LogInformation("Request {RequestId} completed with status {StatusCode} in {ElapsedMilliseconds} ms",
+     requestId,
+     context.Response.StatusCode,
+     elapsed.TotalMilliseconds);
+     });
+
+
 
 //required for the attribute-routed API controller
 app.MapControllers();
