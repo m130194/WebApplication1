@@ -5,6 +5,7 @@ using WebApplication1.Configuration;
 using WebApplication1.Security;
 using WebApplication1.Services;
 using System.Diagnostics;
+using WebApplication1.HealthChecks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,8 +81,11 @@ builder.Services.AddAuthorization(
      });
  });
 
-
-
+//Week 10 Part 25: Register the Health Check
+builder.Services
+ .AddHealthChecks()
+ .AddCheck<MongoDbHealthCheck>(
+ "mongodb");
 
 
 var app = builder.Build();
@@ -136,6 +140,10 @@ app.Use(
 
 //required for the attribute-routed API controller
 app.MapControllers();
+
+//Week 10 Part 26: Map the Health Endpoint
+app.MapHealthChecks(
+ "/health");
 
 app.MapControllerRoute(
     name: "default",
