@@ -42,7 +42,14 @@ builder.Services.AddSingleton<MongoBlogPostService>();
 //Week 8 Part 22 Register the Activity Log Service
 builder.Services.AddSingleton<MongoActivityLogService>();
 //Week 8 Part 23 Register the Background Service that starts when the ASP.NET Core application starts
-builder.Services.AddHostedService<BlogPostChangeWatcher>();
+//Week 10 Part 39: Prevent the Change Stream from Running During Integration Tests
+if (!builder.Environment.IsEnvironment(
+ "Testing"))
+{
+    builder.Services.AddHostedService<
+    BlogPostChangeWatcher>();
+}
+
 
 
 // Add services to the container.
